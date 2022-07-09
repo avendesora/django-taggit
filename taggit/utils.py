@@ -21,8 +21,7 @@ def _parse_tags(tagstring):
     # input, we don't *do* a recall... I mean, we know we only need to
     # split on spaces.
     if "," not in tagstring and '"' not in tagstring:
-        words = list(set(split_strip(tagstring, " ")))
-        words.sort()
+        words = sorted(set(split_strip(tagstring, " ")))
         return words
 
     words = []
@@ -47,8 +46,7 @@ def _parse_tags(tagstring):
                     buffer.append(c)
                     c = next(i)
                 if buffer:
-                    word = "".join(buffer).strip()
-                    if word:
+                    if word := "".join(buffer).strip():
                         words.append(word)
                     buffer = []
                 open_quote = False
@@ -64,14 +62,10 @@ def _parse_tags(tagstring):
                 saw_loose_comma = True
             to_be_split.append("".join(buffer))
     if to_be_split:
-        if saw_loose_comma:
-            delimiter = ","
-        else:
-            delimiter = " "
+        delimiter = "," if saw_loose_comma else " "
         for chunk in to_be_split:
             words.extend(split_strip(chunk, delimiter))
-    words = list(set(words))
-    words.sort()
+    words = sorted(set(words))
     return words
 
 

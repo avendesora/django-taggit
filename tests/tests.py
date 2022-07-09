@@ -653,7 +653,7 @@ class TaggableManagerTestCase(BaseTaggingTestCase):
         spike = self.pet_model.objects.create(name="Spike")
         spot.tags.add("scary")
         spike.tags.add("fluffy")
-        lookup_kwargs = {"%s__name" % self.pet_model._meta.model_name: "Spot"}
+        lookup_kwargs = {f"{self.pet_model._meta.model_name}__name": "Spot"}
         self.assert_tags_equal(
             self.tag_model.objects.filter(**lookup_kwargs), ["scary"]
         )

@@ -81,10 +81,7 @@ class TagListSerializerField(serializers.Field):
     def to_representation(self, value):
         if not isinstance(value, TagList):
             if not isinstance(value, list):
-                if self.order_by:
-                    tags = value.all().order_by(*self.order_by)
-                else:
-                    tags = value.all()
+                tags = value.all().order_by(*self.order_by) if self.order_by else value.all()
                 value = [tag.name for tag in tags]
             value = TagList(value, pretty_print=self.pretty_print)
 
@@ -118,8 +115,7 @@ class TaggitSerializer(serializers.Serializer):
 
         for key in self.fields.keys():
             field = self.fields[key]
-            if isinstance(field, TagListSerializerField):
-                if key in validated_data:
-                    to_be_tagged[key] = validated_data.pop(key)
+            if isinstance(field, TagListSerializerField) and key in validated_data:
+                to_be_tagged[key] = validated_data.pop(key)
 
         return (to_be_tagged, validated_data)
